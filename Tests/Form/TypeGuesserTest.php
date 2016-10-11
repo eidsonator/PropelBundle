@@ -80,7 +80,7 @@ class TypeGuesserTest extends TestCase
         $value = $this->guesser->guessType(self::UNKNOWN_CLASS_NAME, 'property');
 
         $this->assertNotNull($value);
-        $this->assertEquals('text', $value->getType());
+        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\TextType', $value->getType());
         $this->assertEquals(Guess::LOW_CONFIDENCE, $value->getConfidence());
     }
 
@@ -89,7 +89,7 @@ class TypeGuesserTest extends TestCase
         $value = $this->guesser->guessType(self::CLASS_NAME, 'property');
 
         $this->assertNotNull($value);
-        $this->assertEquals('text', $value->getType());
+        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\TextType', $value->getType());
         $this->assertEquals(Guess::LOW_CONFIDENCE, $value->getConfidence());
     }
 
@@ -104,7 +104,7 @@ class TypeGuesserTest extends TestCase
         $this->assertEquals($type, $value->getType());
         $this->assertEquals($confidence, $value->getConfidence());
 
-        if ($type === 'model') {
+        if ($type === 'Symfony\Component\Form\Extension\Core\Type\ModelType') {
             $options = $value->getOptions();
 
             $this->assertSame($multiple, $options['multiple']);
@@ -114,16 +114,16 @@ class TypeGuesserTest extends TestCase
     public static function dataProviderForGuessType()
     {
         return array(
-            array('is_active',  'checkbox', Guess::HIGH_CONFIDENCE),
-            array('enabled',    'checkbox', Guess::HIGH_CONFIDENCE),
-            array('id',         'integer',  Guess::MEDIUM_CONFIDENCE),
-            array('value',      'text',     Guess::MEDIUM_CONFIDENCE),
-            array('price',      'number',   Guess::MEDIUM_CONFIDENCE),
-            array('updated_at', 'datetime', Guess::HIGH_CONFIDENCE),
+            array('is_active',  'Symfony\Component\Form\Extension\Core\Type\CheckboxType', Guess::HIGH_CONFIDENCE),
+            array('enabled',    'Symfony\Component\Form\Extension\Core\Type\CheckboxType', Guess::HIGH_CONFIDENCE),
+            array('id',         'Symfony\Component\Form\Extension\Core\Type\IntegerType',  Guess::MEDIUM_CONFIDENCE),
+            array('value',      'Symfony\Component\Form\Extension\Core\Type\TextType',     Guess::MEDIUM_CONFIDENCE),
+            array('price',      'Symfony\Component\Form\Extension\Core\Type\NumberType',   Guess::MEDIUM_CONFIDENCE),
+            array('updated_at', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', Guess::HIGH_CONFIDENCE),
 
-            array('Authors',    'model',    Guess::HIGH_CONFIDENCE,     true),
-            array('Resellers',  'model',    Guess::HIGH_CONFIDENCE,     true),
-            array('MainAuthor', 'model',    Guess::HIGH_CONFIDENCE,     false),
+            array('Authors',    'Propel\Bundle\PropelBundle\Form\Type\ModelType',    Guess::HIGH_CONFIDENCE,     true),
+            array('Resellers',  'Propel\Bundle\PropelBundle\Form\Type\ModelType',    Guess::HIGH_CONFIDENCE,     true),
+            array('MainAuthor', 'Propel\Bundle\PropelBundle\Form\Type\ModelType',    Guess::HIGH_CONFIDENCE,     false),
         );
     }
 }

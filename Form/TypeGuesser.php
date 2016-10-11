@@ -33,27 +33,27 @@ class TypeGuesser implements FormTypeGuesserInterface
     public function guessType($class, $property)
     {
         if (!$table = $this->getTable($class)) {
-            return new TypeGuess('text', array(), Guess::LOW_CONFIDENCE);
+            return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextType', array(), Guess::LOW_CONFIDENCE);
         }
 
         foreach ($table->getRelations() as $relation) {
             if ($relation->getType() === RelationMap::MANY_TO_ONE) {
                 if (strtolower($property) === strtolower($relation->getName())) {
-                    return new TypeGuess('model', array(
+                    return new TypeGuess('Propel\Bundle\PropelBundle\Form\Type\ModelType', array(
                         'class'    => $relation->getForeignTable()->getClassName(),
                         'multiple' => false,
                     ), Guess::HIGH_CONFIDENCE);
                 }
             } elseif ($relation->getType() === RelationMap::ONE_TO_MANY) {
                 if (strtolower($property) === strtolower($relation->getPluralName())) {
-                    return new TypeGuess('model', array(
+                    return new TypeGuess('Propel\Bundle\PropelBundle\Form\Type\ModelType', array(
                         'class'    => $relation->getForeignTable()->getClassName(),
                         'multiple' => true,
                     ), Guess::HIGH_CONFIDENCE);
                 }
             } elseif ($relation->getType() === RelationMap::MANY_TO_MANY) {
                 if (strtolower($property) == strtolower($relation->getPluralName())) {
-                    return new TypeGuess('model', array(
+                    return new TypeGuess('Propel\Bundle\PropelBundle\Form\Type\ModelType', array(
                         'class'     => $relation->getLocalTable()->getClassName(),
                         'multiple'  => true,
                     ), Guess::HIGH_CONFIDENCE);
@@ -62,32 +62,32 @@ class TypeGuesser implements FormTypeGuesserInterface
         }
 
         if (!$column = $this->getColumn($class, $property)) {
-            return new TypeGuess('text', array(), Guess::LOW_CONFIDENCE);
+            return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextType', array(), Guess::LOW_CONFIDENCE);
         }
 
         switch ($column->getType()) {
             case PropelTypes::BOOLEAN:
             case PropelTypes::BOOLEAN_EMU:
-                return new TypeGuess('checkbox', array(), Guess::HIGH_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\CheckboxType', array(), Guess::HIGH_CONFIDENCE);
             case PropelTypes::TIMESTAMP:
             case PropelTypes::BU_TIMESTAMP:
-                return new TypeGuess('datetime', array(), Guess::HIGH_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\DateTimeType', array(), Guess::HIGH_CONFIDENCE);
             case PropelTypes::DATE:
             case PropelTypes::BU_DATE:
-                return new TypeGuess('date', array(), Guess::HIGH_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\DateType', array(), Guess::HIGH_CONFIDENCE);
             case PropelTypes::TIME:
-                return new TypeGuess('time', array(), Guess::HIGH_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TimeType', array(), Guess::HIGH_CONFIDENCE);
             case PropelTypes::FLOAT:
             case PropelTypes::REAL:
             case PropelTypes::DOUBLE:
             case PropelTypes::DECIMAL:
-                return new TypeGuess('number', array(), Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\NumberType', array(), Guess::MEDIUM_CONFIDENCE);
             case PropelTypes::TINYINT:
             case PropelTypes::SMALLINT:
             case PropelTypes::INTEGER:
             case PropelTypes::BIGINT:
             case PropelTypes::NUMERIC:
-                return new TypeGuess('integer', array(), Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\IntegerType', array(), Guess::MEDIUM_CONFIDENCE);
             case PropelTypes::ENUM:
             case PropelTypes::CHAR:
                 if ($column->getValueSet()) {
@@ -95,17 +95,17 @@ class TypeGuesser implements FormTypeGuesserInterface
                     $choices = $column->getValueSet();
                     $labels = array_map('ucfirst', $choices);
 
-                    return new TypeGuess('choice', array('choices' => array_combine($choices, $labels)), Guess::MEDIUM_CONFIDENCE);
+                    return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\ChoiceType', array('choices' => array_combine($choices, $labels)), Guess::MEDIUM_CONFIDENCE);
                 }
             case PropelTypes::VARCHAR:
-                return new TypeGuess('text', array(), Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextType', array(), Guess::MEDIUM_CONFIDENCE);
             case PropelTypes::LONGVARCHAR:
             case PropelTypes::BLOB:
             case PropelTypes::CLOB:
             case PropelTypes::CLOB_EMU:
                 return new TypeGuess('textarea', array(), Guess::MEDIUM_CONFIDENCE);
             default:
-                return new TypeGuess('text', array(), Guess::LOW_CONFIDENCE);
+                return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextType', array(), Guess::LOW_CONFIDENCE);
         }
     }
 
